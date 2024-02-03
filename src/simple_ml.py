@@ -20,7 +20,8 @@ def add(x, y):
         Sum of x + y
     """
     ### BEGIN YOUR CODE
-    pass
+    print("I am just debugging bro")
+    return x+y
     ### END YOUR CODE
 
 
@@ -48,7 +49,52 @@ def parse_mnist(image_filename, label_filename):
                 for MNIST will contain the values 0-9.
     """
     ### BEGIN YOUR CODE
-    pass
+    #Okay so let me think about this. We have the MNIST file format.
+    #And it looks something like this.
+    """
+        [offset] [type]          [value]          [description]
+        0000     32 bit integer  0x00000803(2051) magic number
+        0004     32 bit integer  60000            number of images
+        0008     32 bit integer  28               number of rows
+        0012     32 bit integer  28               number of columns
+        0016     unsigned byte   ??               pixel
+    """
+    #So the first 16 Bytes are the header.
+    #And then we have the data.
+    #Okay. What's with the number of rows and the number of columns?
+    #Oh yeah, that's how many pixels are there in every image.
+    #So each image is Row*Column long.
+    #Okay so slowly but surely, a picture is forming.
+    with gzip.open(image_filename) as image_bin:
+        img_header = image_bin.read(16)
+        img_magic_number, number_of_images, rows, cols = struct.unpack('>IIII',img_header)
+        print("number of colums is ", cols)
+        print("number of rows is ", rows)
+        print("number of images is ", number_of_images)
+        print("magic number is ", img_magic_number)
+        #Okay so now I have an open file and I can do something about it. 
+        #The header has been parsed. I have the data that I need.
+        #Or atleast the metadata that I need. Now I Need to pack each image in a numpy array.
+        #How do I do that?
+        #I don't think that I'm supposed to use a for-loop. Right? How do you populate an array anyway?
+        #So maybe something like preinitializing the array and then populating the fields?
+        #What I have found is even more efficient.
+        images = np.frombuffer(image_bin.read(number_of_images*rows*cols),dtype=np.uint8)
+        images = images.reshape(number_of_images, rows*cols).astype(np.float32)/255
+
+
+    with gzip.open(label_filename) as label_bin:
+        lbl_header = label_bin.read(8)
+        lbl_magic_number, number_of_items = struct.unpack('>II',lbl_header)
+        print("magic_number for labels is ", lbl_magic_number)
+        print("number of items is ", number_of_items)
+
+        labels = np.frombuffer(label_bin.read(number_of_items),dtype=np.uint8)
+
+    (X,y) = (images,labels)
+    print(y[0:10])
+    return (X,y)
+
     ### END YOUR CODE
 
 
