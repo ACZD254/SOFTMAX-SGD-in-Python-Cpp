@@ -114,7 +114,31 @@ def softmax_loss(Z, y):
         Average softmax loss over the sample.
     """
     ### BEGIN YOUR CODE
-    pass
+    """
+    Okay so what do I need to do again?
+    I know the formula.
+    its something like ->
+    So we already have the logit predictions for each class.
+    One of the things that is different from the last time I tried this is that
+    y is no longer a vector of one-hot encodings but the true label of each class.
+    This changes things.
+    Okay, I understand what is happening here. 
+    Lce = -log(softmax(Zi,yi))
+    so we're using the fact that we have the true class given by y for each example i
+    and then we're using yi as an indexing tool to access the softmax probablity
+    And then the loss is computed by using the entropy formula (-log(probability))
+    Okay, so how can we do this with a single line of code? 
+    And apparently I don't need to use for-loops?
+    """
+    batch_size = Z.shape[0]
+    #I really think that python's list comprehension might be the way to go
+    #So lets say that we're computing individual losses L_i
+    # Compute individual losses L_i for each example
+    individual_losses = [-np.log(np.exp(Z[i, y[i]]) / np.sum(np.exp(Z[i]))) for i in range(batch_size)]
+    # Compute the average loss over the batch
+    average_loss = (1 / batch_size) * np.sum(individual_losses)
+    return average_loss
+
     ### END YOUR CODE
 
 
