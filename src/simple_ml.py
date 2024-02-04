@@ -161,7 +161,42 @@ def softmax_regression_epoch(X, y, theta, lr = 0.1, batch=100):
         None
     """
     ### BEGIN YOUR CODE
-    pass
+    """
+    So, what would the code look like? Something like this
+    1. Create batches with batch_size
+    2. for each batch in batches
+        find the gradient of the loss function w.r.t theta
+        compute new theta using l.r and gradient
+        update theta 
+        And the gradient is given by
+        ∇Θℓsoftmax(XΘ,y)=(1/m)XT(Z−Iy)
+        where
+        Z=normalize(exp(XΘ))(normalization applied row-wise) 
+        denotes the matrix of logits, and  Iy∈Rm×k  represents a concatenation of one-hot bases for the labels in  y.
+    """
+    #Z = np.array([[np.exp(X[i,j])/np.sum(np.exp(X[i])) for j in range(X.shape[1])] for i in range(X.shape[0])])
+    #A better way to do this
+    #Divide Data into batches
+    for start_idx in range(0, X.shape[0], batch):
+        # Create batches
+        X_batch = X[start_idx:start_idx + batch]
+        y_batch = y[start_idx:start_idx + batch]
+
+        # Compute logits and apply softmax
+        logits = np.dot(X_batch, theta) #this is the hypothesis h from the lectures.
+        logits -= np.max(logits, axis=1, keepdims=True)  # For numerical stability though not strictly necessary
+        Z = np.exp(logits) / np.sum(np.exp(logits), axis=1, keepdims=True)
+
+        # Create a one-hot encoding of the true labels
+        Iy = np.zeros_like(Z)
+        Iy[np.arange(X_batch.shape[0]), y_batch] = 1
+
+        # Compute the gradient
+        batch_gradient = (1 / X_batch.shape[0]) * np.dot(X_batch.T, (Z - Iy))
+
+        # Update theta
+        theta -= lr * batch_gradient
+    
     ### END YOUR CODE
 
 
