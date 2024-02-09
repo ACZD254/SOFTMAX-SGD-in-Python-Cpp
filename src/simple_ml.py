@@ -223,7 +223,68 @@ def nn_epoch(X, y, W1, W2, lr = 0.1, batch=100):
         None
     """
     ### BEGIN YOUR CODE
-    pass
+    """
+    Okay so this is not too hard, is it?
+    I am not asked to write down the genralized update for a neural network.
+    All I have to really do is update W1 and W2 on my own and that to with simply 
+    two lines of python code.
+    This should not take too long.
+    
+    This is what the equations look like:
+    Z1∈Rm×d=ReLU(XW1)
+    G2∈Rm×k=normalize(exp(Z1W2))−Iy
+    G1∈Rm×d=1{Z1>0}∘(G2WT2) 
+
+    where 1{Z1>0} is a binary matrix with entries equal to zero or one depending on 
+    whether each term in Z1 is strictly positive and where ∘ denotes elementwise multiplication. 
+
+    Then the gradients of the objective are given by
+    ∇W1ℓsoftmax(ReLU(XW1)W2,y)=(1/m)X.T@G1
+    ∇W2ℓsoftmax(ReLU(XW1)W2,y)=(1/m)Z.T1@G2.
+    """
+
+    #So lets write a ReLU function
+    def ReLU(x):
+        return np.maximum(0,x)
+    
+    #Okay, so now I have to think a bit about batches.
+    #And apparently, it is okay to use for Loops so lets use them
+    num_examples = X.shape[0]
+
+    #Okay so lets try coding this out
+    for idx in range(0, num_examples, batch):
+        #What are we supposed to do?
+    
+    # for start_idx in range(0, num_examples, batch):
+    #     end_idx = min(start_idx + batch, num_examples)
+    #     X_batch = X[start_idx:end_idx]
+    #     y_batch = y[start_idx:end_idx]
+
+    #     #Forward pass
+    #     Z1 = ReLU(np.dot(X_batch, W1))
+    #     logits = np.dot(Z1, W2)
+
+    #     #Softmax probabilities
+    #     exp_logits = np.exp(logits - np.max(logits, axis=1, keepdims=True))
+    #     Z2 = exp_logits / np.sum(exp_logits, axis=1, keepdims=True)
+
+    #     #One-hot encoding for y_batch
+    #     Iy = np.zeros_like(Z2)
+    #     Iy[np.arange(end_idx - start_idx), y_batch] = 1
+
+    #     #Backward pass: compute gradients
+    #     G2 = Z2 - Iy
+    #     G1 = np.dot(G2, W2.T)
+    #     G1[Z1 <= 0] = 0  # Gradient through ReLU
+
+    #     #Gradients for weights
+    #     grad_W1 = np.dot(X_batch.T, G1) / (end_idx - start_idx)
+    #     grad_W2 = np.dot(Z1.T, G2) / (end_idx - start_idx)
+
+    #     # Update weights
+    #     W1 -= lr * grad_W1
+    #     W2 -= lr * grad_W2
+
     ### END YOUR CODE
 
 
