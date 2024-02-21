@@ -8,39 +8,81 @@ namespace py = pybind11;
 
 #include <functional> // For std::function
 
-// Generic element-wise operator function
 template <typename T>
-void elementWiseOperator(const std::function<T(T)>& f, const T* array, size_t size, T* result) {
-    // Pseudocode:
-    // def element_wise_operator(f, array)
-    // for each element of list:
-    //     element[i] of new_array = f(array[i])
-    // return new_array
-    for (size_t i = 0; i < size; ++i) {
-        result[i] = f(array[i]);
+T* transpose(const T* input_matrix, size_t input_rows, size_t input_columns){
+    T* output_matrix = new T[input_columns*input_rows];
+    for (size_t j = 0; j< input_columns; j++){
+        for(size_t i = 0; i< input_rows; i++){
+            output_matrix[j+(i*input_rows)] = input_matrix[i+(j*input_columns)];
+        }
+    }
+    return output_matrix;
+}
+
+template <typename T>
+T dot_product(const T* vector_1, const T* vector_2, size_t k)
+{   
+    /*
+    Takes in two 1D vectors of length k and multiplies them
+    */   
+    T sum = 0;
+    for (size_t i = 0; i<k; i++){
+        sum += vector_1[i] * vector_2[i];
+    }
+    return sum;
+}
+
+template <typename T>
+T* splice(const T* vector, size_t start, size_t end)
+{
+    size_t return_size = (end>start)? (end-start):0;
+    T* spliced_array = new T[return_size];
+    for (size_t i = 0; i< return_size; i++){
+        //We're assuming zero based indexing
+        spliced_array[i] = vector[i+start];
+    }
+    return spliced_array;
+    
+}
+
+
+template <typename t>
+T* mat_mult(const T* matrix_1, const T* matrix_2, size_t rows_1, size_t columns_1, size_t rows_2, size_t columns_2)
+{
+    T* out_matrix = new T[rows_1*columns_2];
+    //Matrix 1 = m*k
+    //Matrix 2 = k*n
+    //The output is a vector m*n long
+    // Check if columns in the first matrix are equal to rows in the second matrix
+    if (columns_1 != rows_2) {
+        std::cerr << "Error: The number of columns in the first matrix must equal the number of rows in the second matrix." << std::endl;
+        return nullptr; // Return a null pointer to indicate failure
+    }
+    /* Main Loop
+        for i in number of rows of first matrix
+            Take row[i] of first matrix
+            for j in number of columns of second matrix
+                Take column[j] matrix
+                output[i,j] = dot_product(row[i], column[j], k)
+
+    */
+    for (size_t i = 1; i < rows_1+1; i++){
+        T* intermediate_vector = new T[rows_1];
+
+
+        delete[] intermediate_vector;
     }
 }
+int main(void){
+    int test_vector_1[] = {0,1,2,3,4,5};
+    int test_vector_2[] = {1,1,1,1,1,1};
+    int result = dot_product(vector1, vector2, length);
 
-// Special case: Exponentiation of array elements
-template <typename T>
-void expArray(const T* array, size_t size, T* result) {
-    // Pseudocode:
-    // def exp_list(array):
-    // return element_wise_operator(exp, array)
-    elementWiseOperator<T>(static_cast<T(*)(T)>(std::exp), array, size, result);
+    // Print the result
+    std::cout << "The dot product of the two vectors is: " << result << std::endl;
+
+    return 0;
 }
-
-// Special case: Multiplication of array elements by a scalar
-template <typename T>
-T* multByNum(T scalar, const T* array, size_t size) {
-    // Pseudocode:
-    // def mult_by_num(some_num):
-    // return lambda(x) (some_num * x)
-    T* result = new T[size];
-    elementWiseOperator<T>([scalar](T x) { return scalar * x; }, array, size, result);
-    return result;
-}
-
 
 
 void softmax_regression_epoch_cpp(const float *X, const unsigned char *y,

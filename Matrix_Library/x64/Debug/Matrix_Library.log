@@ -1,0 +1,17 @@
+﻿  test.cpp
+C:\Users\smtrp\OneDrive\Desktop\DLSys10714\SOFTMAX-SGD-in-Python-Cpp\Matrix_Library\test.cpp(120,52): warning C4244: 'return': conversion from 'double' to 'int', possible loss of data
+  C:\Users\smtrp\OneDrive\Desktop\DLSys10714\SOFTMAX-SGD-in-Python-Cpp\Matrix_Library\test.cpp(120,52):
+  the template instantiation context (the oldest one first) is
+  	C:\Users\smtrp\OneDrive\Desktop\DLSys10714\SOFTMAX-SGD-in-Python-Cpp\Matrix_Library\test.cpp(152,23):
+  	see reference to function template instantiation 'T *exp_array<int>(const T *,size_t)' being compiled
+          with
+          [
+              T=int
+          ]
+  
+C:\Users\smtrp\OneDrive\Desktop\DLSys10714\SOFTMAX-SGD-in-Python-Cpp\Matrix_Library\test.cpp(121,12): error C2672: 'elem_wise_operator': no matching overloaded function found
+  C:\Users\smtrp\OneDrive\Desktop\DLSys10714\SOFTMAX-SGD-in-Python-Cpp\Matrix_Library\test.cpp(110,4):
+  could be 'T *elem_wise_operator(std::function<T(T)> &,const T *,size_t)'
+  	C:\Users\smtrp\OneDrive\Desktop\DLSys10714\SOFTMAX-SGD-in-Python-Cpp\Matrix_Library\test.cpp(121,12):
+  	'T *elem_wise_operator(std::function<T(T)> &,const T *,size_t)': could not deduce template argument for 'std::function<T(T)> &' from 'exp_array::<lambda_1>'
+  
